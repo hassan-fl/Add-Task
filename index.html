@@ -4,21 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Challenge</title>
+    <link rel="stylesheet" 
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Document</title>
 </head>
 <body>
-    <div class="container">
-        <div class="form">
-            <input type="text" name="enter">
+    <main class="container">
+        <div class="upper side">
+            <h1>Task List</h1>
+            <div class="add">
+            <input type="text" name="add" id="adt" placeholder="New Task">
+            <label for="adt">New Task</label>
+            </div>
             <input type="submit" value="Add Task">
         </div>
-        <div class="tasks">
-            <!-- <div>
-                <h2>Hello</h2>
-                <input type="submit" value="delete">
-            </div> -->
+        <div class="lower side">
+            <h2>Tasks</h2>
+            <div class="filter">
+                <input type="text" name="filter" id="filt" placeholder="Filter">
+                <label for="filt">Filter</label>
+            </div>
+            <div class="tasks">
+
+            </div>
+            <input type="reset" value="Clear Tasks">
         </div>
-    </div>
-    <script src="./challenge114.js"></script>
+
+    </main>
+
+    <script src="./main.js"></script>
 </body>
 </html>
