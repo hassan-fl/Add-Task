@@ -1,89 +1,104 @@
-let task = document.querySelector("[value='Add Task']");
-let tasks = document.querySelector(".tasks")
-let leng = [...document.querySelectorAll(".tasks > div")]
-let text = document.querySelector("[type='text']");
-let i = 1;
+let task = document.getElementById("adt");
+let filt = document.getElementById("filt");
+let tasks = document.querySelector(".tasks");
 let arr = [];
+let id = 0;
 
 
 window.onload = function(){
-    if (JSON.parse(localStorage.getItem("tasks"))){
-        console.log("Exist")
-        for(r of JSON.parse(localStorage.getItem("tasks"))){
-            let d = document.createElement("div");
-            d.id = `${r.id}`
-            d.title = `${r.title}`
-            d.innerHTML += `${r.div}`
-            tasks.appendChild(d)
-        }
-    }else{
-        console.log("Empty");
-    }
-}
-task.onclick = function(){
-    if (text.value){
-        tasks.appendChild(creatDiv(text.value));
-        tasks.style.setProperty("--count",leng.length);
-        text.value = "";
-        text.focus();
-    }else{
-        console.log("No");
-    }
-}
+    if(localStorage.length === 0) return;
+    arr.push(...JSON.parse(localStorage.getItem("tasks")));
+    [...JSON.parse(localStorage.getItem("tasks"))].forEach((e)=>{
+        let div = document.createElement("div");
+        div.id = e.id;
+        div.title = e.title;
+        div.innerHTML = e.content;
 
-function creatDiv(va){
+        tasks.appendChild(div);
+    })
+};
+
+
+document.addEventListener("click",(e)=>{
+    if (!(e.target.value == "Add Task")) return;
+    if (!task.value) return;
+    
     let div = document.createElement("div");
-    let h2 = document.createElement("h2");
-    let inp = document.createElement("input");
-    h2.append(va)
-    inp.setAttribute("type","submit");
-    inp.setAttribute("value","delete");
-    // inp.setAttribute("onclick","delet()");
-    inp.id = `di00${i}`;
-    div.id = `div0${i}`;
-    div.title = `${va}`
-    i++;
-    div.appendChild(h2);
-    div.appendChild(inp);
+    let p = document.createElement("p");
+    let ii = document.createElement("i");
+    id++;
 
-    arr.push({
-        "id":div.id,
-        "title":div.title,
-        "div":div.innerHTML
-    });
-    window.localStorage.setItem("tasks",JSON.stringify(arr))
+    ii.className = "fa-solid fa-xmark";
+    ii.id = `i0${id}`;
+    p.innerHTML = task.value
+    p.setAttribute("data-line","false")
+    div.id = `d0${id}`;
+    div.title = task.value;
+    
+    
+    div.appendChild(p);
+    div.appendChild(ii);
+    tasks.appendChild(div);
+    
+    arr.push({id:`d0${id}`,title:task.value,content:div.innerHTML});
 
-    return div;
+    localStorage.setItem("tasks",JSON.stringify(arr));
+});
+
+function line(eve){
+    eve.target.style.textDecoration = "line-through"
 }
 
-function reldiv(di,h2,inp){
-    tasks.innerHTML += di
-    di.innerHTML += h2
-    di.innerHTML += inp
-    
-    // di.appendChild(h2);
-    // di.appendChild(inp);
-    return di
-}
+filt.addEventListener("input",(ee)=>{
+    if (filt.value && filt.value != ""){
+        [...tasks.children].forEach((e)=> e.remove());
+        [...JSON.parse(localStorage.getItem("tasks"))].forEach(function(e){
+            // console.log()
+            if(e.content.includes(filt.value) || e.content.toLowerCase().includes(filt.value)){
+                let div = document.createElement("div");
+                div.id = e.id;
+                div.title = e.title;
+                div.innerHTML = e.content;
 
-// function delet(){
+                tasks.appendChild(div);
+                console.log("here")
+            }
+        })
+    }else{
+        [...JSON.parse(localStorage.getItem("tasks"))].forEach((e)=>{
+            let div = document.createElement("div");
+            div.id = e.id;
+            div.title = e.title;
+            div.innerHTML = e.content;
     
-    document.addEventListener("click",function(ee){
-        if (ee.target.value == "delete"){
-            let mustre = document.querySelector(`div:has(> #${ee.target.id})`);
-            if (document.querySelector("[value='delete']")){
-                console.log(mustre);
-                mustre.remove();
-                var items = JSON.parse(localStorage.getItem("tasks"));
-                for (let ind = 0; ind < items.length;ind++){
-                    if(mustre.id == items[ind].id){
-                        console.log(items[ind]);
-                        items.splice(ind,1);
-                    }
-                }
-                localStorage.setItem("tasks",JSON.stringify(items))
-        }else{
-            console.log("No delete");
+            tasks.appendChild(div);
+        })
+    }
+})
+
+document.addEventListener("click",function(ee){
+    if(!(ee.target.className === "fa-solid fa-xmark")) return;
+    arr = [...JSON.parse(localStorage.getItem("tasks"))];
+    arr.forEach((e,i)=>{
+        if(e.id === document.querySelector(`div:has(> #${ee.target.id})`).id){
+            arr.splice(i,1);
         }
+    })
+    localStorage.setItem("tasks",JSON.stringify(arr));
+    document.querySelector(`div:has(> #${ee.target.id})`).remove();
+});
+
+    document.addEventListener("click",(e)=>{
+        if(!(e.target.dataset.line) ) return;
+        e.target.style.textDecoration = "line-through"
+        
+    })
+
+
+document.addEventListener("click",(e)=>{
+    if (!(e.target.value == "Clear Tasks")) return;
+    if(confirm("Are You Sure?")){
+        [...tasks.children].forEach((e)=> e.remove());
+        localStorage.clear()
     }
 });
